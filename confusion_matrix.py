@@ -1,5 +1,6 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def box_iou_calc(boxes1, boxes2):
     # https://github.com/pytorch/vision/blob/master/torchvision/ops/boxes.py
@@ -95,3 +96,20 @@ class ConfusionMatrix:
     def print_matrix(self):
         for i in range(self.num_classes + 1):
             print(' '.join(map(str, self.matrix[i])))
+
+    def show_matrix(self, title: str = None):
+        if title is None:
+            title = 'Confusion Matrix'
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        xticklabels = [f'Class {i}' for i in range(self.num_classes)] + ['Ghost Predictions']
+        yticklabels = [f'Class {i}' for i in range(self.num_classes)] + ['Undetected']
+
+        sns.heatmap(self.matrix, annot=True, fmt='g', cmap='Blues', cbar=True, ax=ax,
+                    xticklabels=xticklabels,
+                    yticklabels=yticklabels)
+        ax.set_xlabel('Predictions')
+        ax.set_ylabel('Ground Truth')
+        ax.set_title(title)
+        plt.show()
